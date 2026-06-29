@@ -1,0 +1,17 @@
+# Claude Code
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Modelos gerados localmente
+models/*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
