@@ -1,7 +1,7 @@
 # Relatório Técnico — FemHealth AI: Detecção de PCOS
 
 **Tech Challenge FIAP PosTech — Fase 1**
-**Autor:** Nicolas Gomes
+**Autor:** Nicolas Gomes e William Coelho
 **Data:** Junho de 2026
 
 ---
