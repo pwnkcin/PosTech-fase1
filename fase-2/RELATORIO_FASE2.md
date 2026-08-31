@@ -8,7 +8,7 @@
 
 ## 1. Contexto e Objetivo
 
-Na Fase 1 (ver `RELATORIO.md`), três modelos de Machine Learning foram treinados para detecção de PCOS a partir de 3 biomarkers hormonais (AMH, beta-HCG I, beta-HCG II): Regressão Logística, Árvore de Decisão e Random Forest, todos com hiperparâmetros fixados manualmente.
+Na Fase 1 (ver [`../RELATORIO.md`](../RELATORIO.md)), três modelos de Machine Learning foram treinados para detecção de PCOS a partir de 3 biomarkers hormonais (AMH, beta-HCG I, beta-HCG II): Regressão Logística, Árvore de Decisão e Random Forest, todos com hiperparâmetros fixados manualmente.
 
 Este relatório documenta a Fase 2, Projeto 1: otimização desses hiperparâmetros via **algoritmo genético (GA)**, e a integração de uma **LLM (Anthropic Claude)** para traduzir os resultados em linguagem clínica para profissionais de saúde.
 
@@ -138,7 +138,8 @@ Como qualidade de texto gerado por LLM é inerentemente não-determinística, el
 ## 8. Como Reproduzir
 
 ```bash
-pip install -r requirements.txt
+cd fase-2
+pip install -r ../requirements.txt
 python -m pytest tests/ -v                 # suíte de testes (TDD)
 python -m scripts.run_experiments           # baseline + 3 experimentos de GA
 python -m scripts.present_results           # resumo para o vídeo + explicações LLM

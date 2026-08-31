@@ -5,7 +5,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-DATA_PATH = Path(__file__).resolve().parent.parent / "PCOS_infertility.csv"
+DATA_PATH = Path(__file__).resolve().parent.parent.parent / "PCOS_infertility.csv"
 DROP_COLS = ["Sl. No", "Patient File No."]
 TARGET = "PCOS (Y/N)"
 
