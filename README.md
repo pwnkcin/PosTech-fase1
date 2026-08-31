@@ -112,11 +112,14 @@ TechChallenge/
 
 ## Fase 2 — Otimização via Algoritmo Genético + LLM
 
-Projeto 1 do Tech Challenge Fase 2: otimização dos hiperparâmetros dos 3 modelos acima via algoritmo genético, e interpretação dos resultados via LLM (Anthropic Claude). Ver `RELATORIO_FASE2.md` para o relatório técnico completo.
+Projeto 1 do Tech Challenge Fase 2: otimização dos hiperparâmetros dos 3 modelos acima via algoritmo genético, e interpretação dos resultados via LLM (Anthropic Claude). Todo o código, testes e o relatório técnico ficam em [`fase-2/`](fase-2/) — ver [`fase-2/RELATORIO_FASE2.md`](fase-2/RELATORIO_FASE2.md).
 
 ```bash
-# Instala as dependências novas (anthropic, python-dotenv, pytest)
-pip install -r requirements.txt
+cd fase-2
+
+# Instala as dependências novas (anthropic, python-dotenv, pytest) — usa o
+# requirements.txt da raiz do TechChallenge, compartilhado com a Fase 1
+pip install -r ../requirements.txt
 
 # Roda a suíte de testes (TDD)
 python -m pytest tests/ -v
@@ -130,20 +133,23 @@ python -m scripts.run_experiments
 python -m scripts.present_results
 ```
 
-Novos arquivos:
+Estrutura de `fase-2/`:
 
 ```
-src/
-├── data.py                 ← extraído do analysis.ipynb (mesma limpeza/pipeline)
-├── baseline.py              ← os 3 modelos Módulo 1, como no notebook
-├── hyperparam_spaces.py     ← espaço de busca por algoritmo + decode()
-├── genetic_algorithm.py     ← GA genérico (seleção, cruzamento, mutação, execução paralela via joblib)
-├── optimization.py          ← orquestra GA + comparação com baseline
-└── llm_explainer.py         ← prompts + chamada à API da Anthropic
-scripts/
-├── run_experiments.py       ← roda baseline + 3 configs de GA × 3 algoritmos
-└── present_results.py       ← resumo pronto para o vídeo (+ explicações LLM ao vivo)
-tests/                        ← 1 arquivo de teste por módulo acima
-experiments/                  ← histórico de convergência (CSV), gráficos (PNG), summary.json
-logs/ga_optimization.log      ← log de monitoramento gerado por run_experiments.py
+fase-2/
+├── src/
+│   ├── data.py                 ← extraído do analysis.ipynb (mesma limpeza/pipeline)
+│   ├── baseline.py              ← os 3 modelos Módulo 1, como no notebook
+│   ├── hyperparam_spaces.py     ← espaço de busca por algoritmo + decode()
+│   ├── genetic_algorithm.py     ← GA genérico (seleção, cruzamento, mutação, execução paralela via joblib)
+│   ├── optimization.py          ← orquestra GA + comparação com baseline
+│   └── llm_explainer.py         ← prompts + chamada à API da Anthropic
+├── scripts/
+│   ├── run_experiments.py       ← roda baseline + 3 configs de GA × 3 algoritmos
+│   └── present_results.py       ← resumo pronto para o vídeo (+ explicações LLM ao vivo)
+├── tests/                        ← 1 arquivo de teste por módulo acima
+├── experiments/                  ← histórico de convergência (CSV), gráficos (PNG), summary.json
+├── logs/ga_optimization.log      ← log de monitoramento gerado por run_experiments.py
+├── .env.example                  ← copie para .env e preencha ANTHROPIC_API_KEY
+└── RELATORIO_FASE2.md            ← relatório técnico da Fase 2
 ```
