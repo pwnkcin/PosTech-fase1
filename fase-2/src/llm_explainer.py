@@ -5,7 +5,7 @@ is isolated in `_call_llm` so it's the only thing tests need to mock."""
 import os
 
 MODEL = "claude-sonnet-5"
-MAX_TOKENS = 1024
+MAX_TOKENS = 2048
 
 SYSTEM_PROMPT = """Voce e um assistente que traduz resultados de um modelo de \
 machine learning para deteccao de PCOS (Sindrome dos Ovarios Policisticos) em \
