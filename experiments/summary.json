@@ -1,0 +1,333 @@
+{
+  "baseline": {
+    "Regressao Logistica": {
+      "accuracy": 0.6422018348623854,
+      "recall": 0.1111111111111111,
+      "f1": 0.1702127659574468
+    },
+    "Arvore de Decisao": {
+      "accuracy": 0.6880733944954128,
+      "recall": 0.2777777777777778,
+      "f1": 0.37037037037037035
+    },
+    "Random Forest": {
+      "accuracy": 0.6605504587155964,
+      "recall": 0.3888888888888889,
+      "f1": 0.4307692307692308
+    }
+  },
+  "experiments": {
+    "A_rapido": {
+      "config": {
+        "population_size": 15,
+        "generations": 10,
+        "mutation_rate": 0.1,
+        "crossover_rate": 0.8,
+        "tournament_size": 3
+      },
+      "algorithms": {
+        "Regressao Logistica": {
+          "best_chromosome": {
+            "C": 63.94304041898991,
+            "penalty": "l1",
+            "class_weight": "balanced"
+          },
+          "cv_fitness": 0.5278761005076794,
+          "test_metrics": {
+            "accuracy": 0.6513761467889908,
+            "recall": 0.3888888888888889,
+            "f1": 0.42424242424242425
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6422018348623854,
+              "optimized": 0.6513761467889908,
+              "delta": 0.009174
+            },
+            "recall": {
+              "baseline": 0.1111111111111111,
+              "optimized": 0.3888888888888889,
+              "delta": 0.277778
+            },
+            "f1": {
+              "baseline": 0.1702127659574468,
+              "optimized": 0.42424242424242425,
+              "delta": 0.25403
+            }
+          }
+        },
+        "Arvore de Decisao": {
+          "best_chromosome": {
+            "max_depth": 1,
+            "min_samples_split": 7,
+            "min_samples_leaf": 7,
+            "criterion": "entropy"
+          },
+          "cv_fitness": 0.5586973180076629,
+          "test_metrics": {
+            "accuracy": 0.6422018348623854,
+            "recall": 0.4444444444444444,
+            "f1": 0.4507042253521127
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6880733944954128,
+              "optimized": 0.6422018348623854,
+              "delta": -0.045872
+            },
+            "recall": {
+              "baseline": 0.2777777777777778,
+              "optimized": 0.4444444444444444,
+              "delta": 0.166667
+            },
+            "f1": {
+              "baseline": 0.37037037037037035,
+              "optimized": 0.4507042253521127,
+              "delta": 0.080334
+            }
+          }
+        },
+        "Random Forest": {
+          "best_chromosome": {
+            "n_estimators": 129,
+            "max_depth": 1,
+            "min_samples_split": 15,
+            "min_samples_leaf": 6,
+            "max_features": null
+          },
+          "cv_fitness": 0.46246544895468045,
+          "test_metrics": {
+            "accuracy": 0.6513761467889908,
+            "recall": 0.3055555555555556,
+            "f1": 0.36666666666666664
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6605504587155964,
+              "optimized": 0.6513761467889908,
+              "delta": -0.009174
+            },
+            "recall": {
+              "baseline": 0.3888888888888889,
+              "optimized": 0.3055555555555556,
+              "delta": -0.083333
+            },
+            "f1": {
+              "baseline": 0.4307692307692308,
+              "optimized": 0.36666666666666664,
+              "delta": -0.064103
+            }
+          }
+        }
+      }
+    },
+    "B_completo": {
+      "config": {
+        "population_size": 30,
+        "generations": 20,
+        "mutation_rate": 0.05,
+        "crossover_rate": 0.9,
+        "tournament_size": 4
+      },
+      "algorithms": {
+        "Regressao Logistica": {
+          "best_chromosome": {
+            "C": 63.94304041898991,
+            "penalty": "l1",
+            "class_weight": "balanced"
+          },
+          "cv_fitness": 0.5278761005076794,
+          "test_metrics": {
+            "accuracy": 0.6513761467889908,
+            "recall": 0.3888888888888889,
+            "f1": 0.42424242424242425
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6422018348623854,
+              "optimized": 0.6513761467889908,
+              "delta": 0.009174
+            },
+            "recall": {
+              "baseline": 0.1111111111111111,
+              "optimized": 0.3888888888888889,
+              "delta": 0.277778
+            },
+            "f1": {
+              "baseline": 0.1702127659574468,
+              "optimized": 0.42424242424242425,
+              "delta": 0.25403
+            }
+          }
+        },
+        "Arvore de Decisao": {
+          "best_chromosome": {
+            "max_depth": 1,
+            "min_samples_split": 7,
+            "min_samples_leaf": 7,
+            "criterion": "entropy"
+          },
+          "cv_fitness": 0.5586973180076629,
+          "test_metrics": {
+            "accuracy": 0.6422018348623854,
+            "recall": 0.4444444444444444,
+            "f1": 0.4507042253521127
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6880733944954128,
+              "optimized": 0.6422018348623854,
+              "delta": -0.045872
+            },
+            "recall": {
+              "baseline": 0.2777777777777778,
+              "optimized": 0.4444444444444444,
+              "delta": 0.166667
+            },
+            "f1": {
+              "baseline": 0.37037037037037035,
+              "optimized": 0.4507042253521127,
+              "delta": 0.080334
+            }
+          }
+        },
+        "Random Forest": {
+          "best_chromosome": {
+            "n_estimators": 281,
+            "max_depth": 12,
+            "min_samples_split": 9,
+            "min_samples_leaf": 7,
+            "max_features": null
+          },
+          "cv_fitness": 0.4438112721569175,
+          "test_metrics": {
+            "accuracy": 0.6330275229357798,
+            "recall": 0.3055555555555556,
+            "f1": 0.3548387096774194
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6605504587155964,
+              "optimized": 0.6330275229357798,
+              "delta": -0.027523
+            },
+            "recall": {
+              "baseline": 0.3888888888888889,
+              "optimized": 0.3055555555555556,
+              "delta": -0.083333
+            },
+            "f1": {
+              "baseline": 0.4307692307692308,
+              "optimized": 0.3548387096774194,
+              "delta": -0.075931
+            }
+          }
+        }
+      }
+    },
+    "C_exploratorio": {
+      "config": {
+        "population_size": 10,
+        "generations": 8,
+        "mutation_rate": 0.35,
+        "crossover_rate": 0.7,
+        "tournament_size": 2
+      },
+      "algorithms": {
+        "Regressao Logistica": {
+          "best_chromosome": {
+            "C": 63.94304041898991,
+            "penalty": "l1",
+            "class_weight": "balanced"
+          },
+          "cv_fitness": 0.5278761005076794,
+          "test_metrics": {
+            "accuracy": 0.6513761467889908,
+            "recall": 0.3888888888888889,
+            "f1": 0.42424242424242425
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6422018348623854,
+              "optimized": 0.6513761467889908,
+              "delta": 0.009174
+            },
+            "recall": {
+              "baseline": 0.1111111111111111,
+              "optimized": 0.3888888888888889,
+              "delta": 0.277778
+            },
+            "f1": {
+              "baseline": 0.1702127659574468,
+              "optimized": 0.42424242424242425,
+              "delta": 0.25403
+            }
+          }
+        },
+        "Arvore de Decisao": {
+          "best_chromosome": {
+            "max_depth": 1,
+            "min_samples_split": 7,
+            "min_samples_leaf": 7,
+            "criterion": "entropy"
+          },
+          "cv_fitness": 0.5586973180076629,
+          "test_metrics": {
+            "accuracy": 0.6422018348623854,
+            "recall": 0.4444444444444444,
+            "f1": 0.4507042253521127
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6880733944954128,
+              "optimized": 0.6422018348623854,
+              "delta": -0.045872
+            },
+            "recall": {
+              "baseline": 0.2777777777777778,
+              "optimized": 0.4444444444444444,
+              "delta": 0.166667
+            },
+            "f1": {
+              "baseline": 0.37037037037037035,
+              "optimized": 0.4507042253521127,
+              "delta": 0.080334
+            }
+          }
+        },
+        "Random Forest": {
+          "best_chromosome": {
+            "n_estimators": 297,
+            "max_depth": 26,
+            "min_samples_split": 15,
+            "min_samples_leaf": 6,
+            "max_features": null
+          },
+          "cv_fitness": 0.4401070878574239,
+          "test_metrics": {
+            "accuracy": 0.6422018348623854,
+            "recall": 0.3333333333333333,
+            "f1": 0.38095238095238093
+          },
+          "comparison_vs_baseline": {
+            "accuracy": {
+              "baseline": 0.6605504587155964,
+              "optimized": 0.6422018348623854,
+              "delta": -0.018349
+            },
+            "recall": {
+              "baseline": 0.3888888888888889,
+              "optimized": 0.3333333333333333,
+              "delta": -0.055556
+            },
+            "f1": {
+              "baseline": 0.4307692307692308,
+              "optimized": 0.38095238095238093,
+              "delta": -0.049817
+            }
+          }
+        }
+      }
+    }
+  }
+}
