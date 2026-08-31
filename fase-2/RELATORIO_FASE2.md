@@ -12,6 +12,53 @@ Na Fase 1 (ver [`../RELATORIO.md`](../RELATORIO.md)), três modelos de Machine L
 
 Este relatório documenta a Fase 2, Projeto 1: otimização desses hiperparâmetros via **algoritmo genético (GA)**, e a integração de uma **LLM (Anthropic Claude)** para traduzir os resultados em linguagem clínica para profissionais de saúde.
 
+### 1.1 Arquitetura do Sistema
+
+```mermaid
+flowchart TD
+    subgraph fase1["Fase 1 (imutável)"]
+        CSV["PCOS_infertility.csv"]
+        NB["analysis.ipynb"]
+        CSV --> NB
+    end
+
+    subgraph src["fase-2/src/"]
+        DATA["data.py<br/>load_data + build_pipeline<br/>(mesma limpeza do notebook)"]
+        BASE["baseline.py<br/>3 modelos Modulo 1<br/>hiperparametros fixos"]
+        SPACE["hyperparam_spaces.py<br/>espaco de busca por algoritmo<br/>+ decode()"]
+        GA["genetic_algorithm.py<br/>selecao / cruzamento / mutacao<br/>avaliacao paralela (joblib)"]
+        OPT["optimization.py<br/>orquestra GA + fitness CV<br/>compara com baseline"]
+        LLM["llm_explainer.py<br/>prompts + chamada Anthropic"]
+    end
+
+    subgraph scripts["fase-2/scripts/"]
+        RUN["run_experiments.py"]
+        PRESENT["present_results.py"]
+    end
+
+    subgraph out["fase-2/experiments/ + logs/"]
+        HIST["history_*.csv<br/>convergence_*.png"]
+        SUMMARY["summary.json"]
+        LOG["ga_optimization.log"]
+    end
+
+    CSV --> DATA
+    DATA --> BASE
+    DATA --> OPT
+    BASE --> RUN
+    SPACE --> GA
+    GA --> OPT
+    OPT --> RUN
+    RUN --> HIST
+    RUN --> SUMMARY
+    RUN --> LOG
+    SUMMARY --> PRESENT
+    PRESENT --> LLM
+    LLM -->|"API"| ANTHROPIC[("Anthropic API<br/>claude-sonnet-5")]
+```
+
+**Fluxo:** `run_experiments.py` treina o baseline (`baseline.py`), roda 3 configurações de GA (`genetic_algorithm.py` + `hyperparam_spaces.py`, orquestrado por `optimization.py`) para os 3 algoritmos, e persiste histórico/gráficos/resumo em `experiments/` e log em `logs/`. `present_results.py` lê esse resumo, formata para o vídeo de demonstração e, se houver `ANTHROPIC_API_KEY`, chama `llm_explainer.py` para gerar explicações clínicas ao vivo. A fitness do GA (`optimization.py`) nunca toca o conjunto de teste — só `X_train` via validação cruzada (ver Seção 2.3).
+
 ---
 
 ## 2. Algoritmo Genético — Implementação
@@ -115,14 +162,38 @@ O `system prompt` fixa 4 seções obrigatórias (Resumo, Fatores Determinantes, 
 
 ### 6.3 Avaliação da qualidade
 
-Como qualidade de texto gerado por LLM é inerentemente não-determinística, ela não é validada por asserção exata em teste automatizado. A avaliação foi feita manualmente com um checklist fixo, aplicado às explicações geradas por `scripts/present_results.py`:
+Como qualidade de texto gerado por LLM é inerentemente não-determinística, ela não é validada por asserção exata em teste automatizado. A avaliação foi feita manualmente com um checklist fixo, aplicado a uma chamada real de `scripts/present_results.py` (modelo `claude-sonnet-5`, `ANTHROPIC_API_KEY` configurada em `.env`):
 
-- [ ] Menciona o biomarker de maior impacto (SHAP)?
-- [ ] Contém as 4 seções obrigatórias?
-- [ ] Termina com o aviso "ferramenta de apoio"?
-- [ ] Evita afirmar certeza absoluta no diagnóstico?
+**Checklist — `explain_diagnosis` (paciente de exemplo) e `explain_optimization` (Random Forest):**
 
-> **Nota:** este ambiente de desenvolvimento não tinha uma `ANTHROPIC_API_KEY` configurada, então nenhuma chamada real à API foi feita — `scripts/present_results.py` detectou a ausência da chave e pulou essa seção automaticamente (comportamento testado em `tests/test_llm_explainer.py`). Antes de gravar o vídeo, copie `.env.example` para `.env`, preencha a chave, rode `python -m scripts.present_results` e cole aqui a explicação real gerada, junto com o checklist preenchido.
+- [x] Menciona o biomarker de maior impacto (SHAP)? — sim, ambas citam AMH explicitamente e explicam seu papel clínico.
+- [x] Contém as 4 seções obrigatórias (Resumo, Fatores Determinantes, Recomendação, Limitações)? — sim, nas duas respostas.
+- [x] Termina com o aviso "ferramenta de apoio"? — sim, nas duas respostas.
+- [x] Evita afirmar certeza absoluta no diagnóstico? — sim ("não deve ser interpretada como certeza diagnóstica", "não estabelece causalidade").
+
+**Exemplo real — `explain_diagnosis`** (paciente sintética: AMH=8.2, beta-HCG I=1.1, beta-HCG II=0.5, predição "Com PCOS", probabilidade 87%):
+
+> **Resumo:** O modelo classificou a paciente como provável caso de PCOS, com probabilidade estimada de 87%. Essa é uma probabilidade elevada, mas não deve ser interpretada como certeza diagnóstica — trata-se de uma estimativa estatística baseada em padrões aprendidos a partir de dados históricos.
+>
+> **Fatores Determinantes:** AMH (Hormônio Anti-Mülleriano) = 8.2 foi identificado como o biomarcador de maior impacto na predição, segundo a análise SHAP. Valores elevados de AMH são consistentes com a fisiopatologia da PCOS [...]. Os valores de beta-HCG I e II aparentam estar dentro de faixas não indicativas de gestação e tiveram menor influência relativa na decisão do modelo.
+>
+> **Recomendação:** Considerar a correlação clínica do AMH elevado com outros critérios diagnósticos estabelecidos (ex.: critérios de Rotterdam) [...]. Utilizar o resultado do modelo como triagem ou suporte complementar, não como substituto da avaliação clínica integral.
+>
+> **Limitações:** O modelo baseia-se em um número limitado de biomarcadores (apenas 3) [...]. A importância do SHAP reflete contribuição estatística, não necessariamente relação causal comprovada na paciente individual.
+>
+> *Esta é uma ferramenta de apoio, o diagnóstico final é responsabilidade do profissional de saúde habilitado.*
+
+**Exemplo real — `explain_optimization`** (Random Forest, baseline vs. config C_exploratorio):
+
+> **Resumo:** A tentativa de otimização dos hiperparâmetros do modelo Random Forest [...] não trouxe melhoria no desempenho [...]. O hospital não deve substituir o modelo atual pelo modelo gerado nesta rodada de otimização.
+>
+> **Fatores Determinantes:** Recall caiu de 38,9% para 33,3% — isso é especialmente preocupante, pois indica que o modelo otimizado identifica ainda menos casos reais de PCOS [...]. A configuração do algoritmo genético (população pequena de 10, apenas 8 gerações, mutação alta de 0,35) pode ter limitado a exploração do espaço de hiperparâmetros.
+>
+> **Recomendação:** Não substituir o modelo atual [...]. Priorizar, em futuras rodadas, a métrica de recall como critério de otimização, dado que a detecção de PCOS é um contexto clínico em que falsos negativos têm custo elevado.
+>
+> **Limitações:** As métricas referem-se a um único experimento; não há informação sobre variabilidade estatística dos resultados [...].
+
+Nos dois casos, a LLM identificou corretamente o sinal técnico correto (AMH como driver; a piora do Random Forest) sem que essa conclusão estivesse explicitada no prompt em linguagem simples — ela leu os números e interpretou. Isso confirma que o prompt engineering (Seção 6.2) está funcionando como pretendido: transformar métricas cruas em leitura clínica acionável.
 
 ---
 
@@ -132,6 +203,7 @@ Como qualidade de texto gerado por LLM é inerentemente não-determinística, el
 - **Vazamento de dados na busca:** resolvido fixando a fitness do GA à validação cruzada sobre o treino, nunca o teste (Seção 2.3).
 - **Combinações inválidas de hiperparâmetros:** resolvido tornando o `solver` da Regressão Logística derivado do `penalty`, e não um gene independente — elimina a possibilidade de o GA gastar avaliações em configurações que o sklearn rejeitaria.
 - **Custo computacional:** paralelização via `joblib` (Seção 5) mantém os 9 experimentos executáveis em poucos minutos em hardware comum.
+- **Truncamento silencioso da LLM:** o primeiro teste com a API real (Seção 6.3) veio cortado no meio de uma frase. Causa: `max_tokens=1024` era insuficiente para a explicação de otimização (resposta mais longa, com 4 seções + análise). Confirmado inspecionando `response.stop_reason == "max_tokens"`. Corrigido subindo `MAX_TOKENS` para 2048 em `llm_explainer.py`; as duas explicações documentadas acima já refletem a versão corrigida.
 
 ---
 
