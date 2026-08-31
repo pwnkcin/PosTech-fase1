@@ -107,3 +107,43 @@ TechChallenge/
 ## Aviso Legal
 
 > Este sistema é uma **ferramenta de apoio ao diagnóstico**. O diagnóstico final é responsabilidade exclusiva do profissional de saúde habilitado. Não substitui consulta médica, exames clínicos ou avaliação especializada.
+
+---
+
+## Fase 2 — Otimização via Algoritmo Genético + LLM
+
+Projeto 1 do Tech Challenge Fase 2: otimização dos hiperparâmetros dos 3 modelos acima via algoritmo genético, e interpretação dos resultados via LLM (Anthropic Claude). Ver `RELATORIO_FASE2.md` para o relatório técnico completo.
+
+```bash
+# Instala as dependências novas (anthropic, python-dotenv, pytest)
+pip install -r requirements.txt
+
+# Roda a suíte de testes (TDD)
+python -m pytest tests/ -v
+
+# Roda o baseline + 3 experimentos de GA (3 algoritmos cada) — gera experiments/summary.json
+python -m scripts.run_experiments
+
+# Apresenta os resultados formatados para o vídeo de demonstração;
+# se ANTHROPIC_API_KEY estiver configurada (copie .env.example para .env),
+# também gera explicações da LLM ao vivo.
+python -m scripts.present_results
+```
+
+Novos arquivos:
+
+```
+src/
+├── data.py                 ← extraído do analysis.ipynb (mesma limpeza/pipeline)
+├── baseline.py              ← os 3 modelos Módulo 1, como no notebook
+├── hyperparam_spaces.py     ← espaço de busca por algoritmo + decode()
+├── genetic_algorithm.py     ← GA genérico (seleção, cruzamento, mutação, execução paralela via joblib)
+├── optimization.py          ← orquestra GA + comparação com baseline
+└── llm_explainer.py         ← prompts + chamada à API da Anthropic
+scripts/
+├── run_experiments.py       ← roda baseline + 3 configs de GA × 3 algoritmos
+└── present_results.py       ← resumo pronto para o vídeo (+ explicações LLM ao vivo)
+tests/                        ← 1 arquivo de teste por módulo acima
+experiments/                  ← histórico de convergência (CSV), gráficos (PNG), summary.json
+logs/ga_optimization.log      ← log de monitoramento gerado por run_experiments.py
+```
